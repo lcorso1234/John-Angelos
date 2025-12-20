@@ -24,15 +24,28 @@ export default function Home() {
       "END:VCARD",
     ].join("\n");
 
-    const blob = new Blob([vcard], { type: "text/vcard" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "John-Angelos.vcf";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+    if (isIOS) {
+      const dataUrl = `data:text/vcard;charset=utf-8,${encodeURIComponent(vcard)}`;
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.target = "_blank";
+      link.download = "John-Angelos.vcf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } else {
+      const blob = new Blob([vcard], { type: "text/vcard" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "John-Angelos.vcf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
 
     const smsBody = encodeURIComponent(
       "You're now connected with John Angelos from Chromium Industries."
@@ -40,7 +53,7 @@ export default function Home() {
     const smsUri = `sms:${CONTACT.phoneDigits}?&body=${smsBody}`;
     setTimeout(() => {
       window.location.href = smsUri;
-    }, 300);
+    }, 700);
   };
 
   return (
