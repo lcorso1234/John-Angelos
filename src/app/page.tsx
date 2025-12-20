@@ -12,6 +12,19 @@ const CONTACT = {
 
 export default function Home() {
   const handleSaveContact = () => {
+    const openSmsPrompt = () => {
+      const confirmed = window.confirm(
+        "Send John a text to confirm you're in his network?"
+      );
+      if (!confirmed) return;
+
+      const smsBody = encodeURIComponent(
+        "You're now connected with John Angelos from Chromium Industries."
+      );
+      const smsUri = `sms:${CONTACT.phoneDigits}?&body=${smsBody}`;
+      window.location.href = smsUri;
+    };
+
     const vcard = [
       "BEGIN:VCARD",
       "VERSION:3.0",
@@ -47,13 +60,7 @@ export default function Home() {
       setTimeout(() => URL.revokeObjectURL(url), 1500);
     }
 
-    const smsBody = encodeURIComponent(
-      "You're now connected with John Angelos from Chromium Industries."
-    );
-    const smsUri = `sms:${CONTACT.phoneDigits}?&body=${smsBody}`;
-    setTimeout(() => {
-      window.location.href = smsUri;
-    }, 700);
+    setTimeout(openSmsPrompt, 400);
   };
 
   return (
